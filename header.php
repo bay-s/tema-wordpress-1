@@ -1,76 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LATIHAN WORDPRESS</title>
-    <?php wp_head() ?>
-</head>
-<body <?php body_class(); ?> >
-
-<header class="header-top">
-<nav class="nav-top">
-<div class="header-title">
-    <?php if(function_exists('the_custom_logo')) : ?> 
-            <?php 
-				 $custom_logo_id = get_theme_mod('custom_logo');
-				 $logo = wp_get_attachment_image_src($custom_logo_id);		  
-			?>
-      <a href="<?php bloginfo('url'); ?>">
-	    <img class="my-logo" src="<?php echo $logo[0] ?>"  alt="logo" >
-      </a>
-	  <?php endif ; ?> 
-<!-- END IMAGE CHECK -->
-<div class="header-top-title">
-<h2 class="title"><a href="<?php bloginfo('url'); ?>"><?php bloginfo('name'); ?></a></h2>
-<p class="site-description"><?php bloginfo('description') ?></p>
-</div>
-    </div>
-</nav>
-</header>
-
-<header class="header"  id="my-header" >
-<nav class="navbar is-align-items-center is-transparent">
-<div class="navbar-brand  is-align-items-center">
-<div class="my-dropdown">
-<?php wp_nav_menu(array('theme_location' => 'primary')); ?>
-<div class="search-left">
-<?php get_search_form(); ?>
-</div>
-</div>
-  </div>
-
-  <div id="navbarBasicExample" class="navbar-menu">
-    <div class="navbar-start">
-      <div class="navbar-item has-dropdown is-hoverable">
-        <div class="navbar-dropdown">
-        <?php wp_nav_menu(array('theme_location' => 'primary')); ?>
-        </div>
-      </div>
-    </div>
-
-    <div class="navbar-end">
-    <?php get_search_form(); ?>
-    </div>
-  </div>
-  <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-</nav>
-</header>
-
-
-
-
 <?php
 
+use Automattic\Jetpack\Sync\Functions;
+
 /*
-<header class="header"  id="my-header" >
-<nav class="navbar is-align-items-center is-transparent">
-       <?php wp_nav_menu(array('theme_location' => 'primary')); ?>
-       <?php get_search_form(); ?>
-</nav>
-</header>
+-------------------------------------------------------
+ADD STYLE AND SCRIPT
+-------------------------------------------------------
+*/
+
+function add_my_style(){
+
+    wp_enqueue_style('my-style',get_template_directory_uri() . '/css/mycss.css',array(),rand(111,9999),"all");
+    
+    wp_enqueue_style('bulma',get_template_directory_uri() . '/bulma/css/bulma.css',array(),rand(111,9999),"all");
+//   wp_enqueue_style('bulmas',get_template_directory_uri() . '/bulma/css/bulma.min.css',array(),rand(111,9999),"all");
+    wp_enqueue_script('my-js',get_template_directory_uri() . '/js/my-js.js',array(),rand(111,9999),true);
+    wp_enqueue_style('fonts', "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css",
+    array(),rand(111,9999),"all");
+        wp_enqueue_style('google-fonts', "https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Noto+Sans:wght@500&family=Outfit:wght@300&family=Pacifico&family=Poppins:wght@200&display=swap",
+    array(),rand(111,9999),"all");
+
+};
+
+add_action('wp_enqueue_scripts','add_my_style');
+
+/*
+-------------------------------------------------------
+ADD MENU NAVIGATION
+-------------------------------------------------------
+*/
+
+function add_my_menus(){
+    add_theme_support('menus');
+    register_nav_menus(
+         [
+            'primary' => 'Header Menu',
+            'secondary' => 'Footer Menu'
+         ]
+    );
+
+};
+
+add_action('init','add_my_menus');
+
+
+
+/*
+-------------------------------------------------------
+ADD THEME SUPPORT
+-------------------------------------------------------
+*/
+
+function add_tema_menu(){
+    add_theme_support(
+        'custom-logo',
+        array(
+            'height'      => 250,
+            'width'       => 250,
+            'flex-width'  => true,
+            'flex-height' => true,
+        )
+    );
+    add_theme_support( 'title-tag' );
+    add_theme_support( 'custom-logo' );
+    add_theme_support( 'post-thumbnails' );
+    add_theme_support('custom-background');
+    add_theme_support('custom-header');
+    add_theme_support('html5',array('search-form'));
+    add_theme_support( 'post-formats', array( 'aside', 'image','video' ) );
+    };
+  
+    add_action('after_setup_theme','add_tema_menu');
+  
+
+/*
+-------------------------------------------------------
+ADD SIDEBAR
+-------------------------------------------------------
+*/
+
+function add_my_sidebar(){
+
+    register_sidebar(
+        array(
+          'name' => 'Sidebar',
+          'id' => 'Sidebar-1',
+          'class' => 'custom',
+          'description' => 'Widget sidebar',
+          'before-widget' => '<aside id="%1$s" class="widget %2$s" >',
+          'after-widget' => '</aside>',
+          'before-style' => '<h1 class="widget-title">',
+          'after-style' => '</h1>'
+        )
+        );
+};
+
+add_action('widgets_init','add_my_sidebar');
+
+/*
+------------------------------------------
+INCLUDE WALKER
+------------------------------------------
+*/
+require get_template_directory() . '/inc/walker.php';
