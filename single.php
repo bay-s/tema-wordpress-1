@@ -3,7 +3,8 @@
 <?php get_header(); ?>
 
 <section class="single-container">
-<div class="column">
+<div class="columns multiline  is-variable is-8">
+<div class="column is-three-fifths">
 <?php if(have_posts()) : ?>
    <?php while(have_posts()) :  ?>
 <?php the_post(); ?>
@@ -33,16 +34,28 @@
 <?php endwhile; ?>
 
 <?php endif; ?>
+</div><!-- END CONTENT COLUMNT-->
+
+
+<div class="column is-one-third">
+<?php get_sidebar() ?>
 </div>
+<!-- END SIDEBAR -->
+
+</div>
+
+<div class="box">
 <div class="page-link">
-	
 <?php previous_post_link( '<strong>%link</strong>' ); ?>
 <?php next_post_link( '<strong>%link</strong>' ); ?>
 </div>
-<?php 
-comments_template();
+</div>
+<?php  if(comments_open()) {
+   comments_template();
+}else{
+echo "<h4 class='is-size-4 has-text-centered'>Sorry comment are closed</h4>";
+}
 ?>
-
 </section>
 
 
